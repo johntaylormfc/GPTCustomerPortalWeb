@@ -1,5 +1,5 @@
 import { revalidatePath } from 'next/cache';
-import { ArrowRight, FileText, RefreshCcw, Wallet } from 'lucide-react';
+import { ArrowRight, FileText, RefreshCcw, Wallet, Wrench } from 'lucide-react';
 import { NavigationCard } from '@/components/ui/navigation-card';
 import { SummaryCard } from '@/components/ui/summary-card';
 import { SaveButton } from '@/components/save-button';
@@ -61,7 +61,7 @@ export default async function PortalPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid items-start gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <SummaryCard title="Current Balance" value={formatAmount(summary?.balance)} icon={<Wallet />} />
         <SummaryCard title="Balance Due" value={formatAmount(summary?.balanceDueLcy)} icon={<FileText />} tone="warning" />
         <SummaryCard title="Sales (LCY)" value={formatAmount(summary?.salesLcy)} icon={<RefreshCcw />} tone="default" />
@@ -158,6 +158,12 @@ export default async function PortalPage() {
           description="Orders with remaining quantities."
           href="/portal/orders"
           icon={<ArrowRight />}
+        />
+        <NavigationCard
+          title="Works Orders"
+          description="View repair works orders and timelines."
+          href="/portal/works-orders"
+          icon={<Wrench />}
         />
         <NavigationCard
           title="Credit Memos"

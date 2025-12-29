@@ -120,3 +120,76 @@ export interface CustomerLedgerEntry {
   amount: number;
   remainingAmount: number;
 }
+
+export interface WorksOrder {
+  id: string;
+  worksOrderNo: string;
+  customerNo: string;
+  customerRepairNo?: string;
+  issueDate?: string;
+  responseDate?: string;
+  completionDate?: string;
+  completionTime?: string;
+  status?: string;
+  jobType?: string;
+  recalledDate?: string;
+  rectifiedDate?: string;
+  invoiceNo?: string;
+  released?: boolean;
+  paid?: boolean;
+  tenantName?: string;
+  tenantAddress?: string;
+  tenantAddress2?: string;
+  tenantCity?: string;
+  tenantPostcode?: string;
+  phoneNo?: string;
+  email?: string;
+  contractorCode?: string;
+  total?: number;
+  totalInclVat?: number;
+  totalCost?: number;
+}
+
+export interface WorksOrderLine {
+  id: string;
+  worksOrderNo: string;
+  customerNo: string;
+  lineNo: number;
+  type?: string;
+  sorCode?: string;
+  description?: string;
+  description2?: string;
+  quantity?: number;
+  trade?: number;
+  materials?: number;
+  total?: number;
+  totalInclVat?: number;
+  cost?: number;
+  totalCost?: number;
+  vatCode?: string;
+  location?: string;
+  variationCompleteDate?: string;
+  issueDate?: string;
+  authorisedBy?: string;
+  authorisationDate?: string;
+  addedToInvoice?: boolean;
+}
+
+export interface WorksOrderEvent {
+  id: string;
+  entryNo: number;
+  jobNo: string;
+  customerJobNo?: string;
+  direction?: string;
+  eventType?: string;
+  detail?: string;
+  eventDate?: string;
+  eventTime?: string;
+  attention?: string;
+  requiresAttention?: boolean;
+  stage?: string;
+  appointmentTime?: string;
+  extraText?: string;
+  sent?: string;
+  userId?: string;
+}

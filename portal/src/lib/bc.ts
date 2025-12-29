@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { CompanyInfo, CustomerDetail, CustomerLedgerEntry, CustomerSummary, SalesCreditMemo, SalesInvoice, SalesOrder, SalesReturnOrder, SalesShipment, SalesShipmentLine } from './types';
+import { CompanyInfo, CustomerDetail, CustomerLedgerEntry, CustomerSummary, SalesCreditMemo, SalesInvoice, SalesOrder, SalesReturnOrder, SalesShipment, SalesShipmentLine, WorksOrder, WorksOrderEvent, WorksOrderLine } from './types';
 
 const requiredEnv = ['BC_TENANT_ID', 'BC_ENVIRONMENT', 'BC_CLIENT_ID', 'BC_CLIENT_SECRET', 'BC_COMPANY_ID'] as const;
 
@@ -216,9 +216,40 @@ export async function getOpenCustomerLedger(customerNo?: string): Promise<Custom
   return payload.value;
 }
 
-async function getPdfFromApi(entitySetName: string, documentNo: string): Promise<string> {
+export async function getWorksOrders(customerNo?: string): Promise<WorksOrder[]> {
+  const searchParams: Record<string, string> = {};
+  if (customerNo) searchParams['$filter'] = `customerNo eq '${customerNo}'`;
+  const payload = await callBcApi<{ value: WorksOrder[] }>('worksOrders', { searchParams });
+  return payload.value;
+}
+
+export async function getWorksOrder(worksOrderNo: string, customerNo?: string): Promise<WorksOrder | null> {
+  const filterParts = [`worksOrderNo eq '${worksOrderNo}'`];
+  if (customerNo) filterParts.push(`customerNo eq '${customerNo}'`);
+
+  const payload = await callBcApi<{ value: WorksOrder[] }>('worksOrders', {
+    searchParams: { '$filter': filterParts.join(' and ') },
+  });
+  return payload.value[0] ?? null;
+}
+
+export async function getWorksOrderLines(worksOrderNo: string): Promise<WorksOrderLine[]> {
+  const payload = await callBcApi<{ value: WorksOrderLine[] }>('worksOrderLines', {
+    searchParams: { '$filter': `worksOrderNo eq '${worksOrderNo}'` },
+  });
+  return payload.value;
+}
+
+export async function getWorksOrderEvents(worksOrderNo: string): Promise<WorksOrderEvent[]> {
+  const payload = await callBcApi<{ value: WorksOrderEvent[] }>('worksOrderEvents', {
+    searchParams: { '$filter': `jobNo eq '${worksOrderNo}'` },
+  });
+  return payload.value;
+}
+
+async function getPdfFromApi(entitySetName: string, documentNo: string, searchField = 'no'): Promise<string> {
   const payload = await callBcApi<{ value: { pdfBase64: string }[] }>(entitySetName, {
-    searchParams: { '$filter': `no eq '${documentNo}'` },
+    searchParams: { '$filter': `${searchField} eq '${documentNo}'` },
   });
   return payload.value?.[0]?.pdfBase64 ?? '';
 }
@@ -237,6 +268,10 @@ export function getCreditMemoPdf(documentNo: string) {
 
 export function getStatementPdf(customerNo: string) {
   return getPdfFromApi('customerStatementPdfs', customerNo);
+}
+
+export function getWorksOrderPdf(worksOrderNo: string) {
+  return getPdfFromApi('worksOrderPdfs', worksOrderNo, 'worksOrderNo');
 }
 
 export async function createReturnOrder(payload: unknown) {
