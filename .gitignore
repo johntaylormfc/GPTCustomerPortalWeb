@@ -1,0 +1,26 @@
+# Build artifacts
+node_modules/
+.next/
+out/
+dist/
+
+# Environment
+.env
+.env.local
+.env.*.local
+!.env.local.example
+!.env.example
+
+# Logs
+npm-debug.log*
+yarn-error.log
+pnpm-debug.log*
+*.log
+
+# Editor/OS
+.vscode/
+.DS_Store
+
+# Test output
+coverage/
+.snapshots/
